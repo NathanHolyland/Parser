@@ -22,7 +22,7 @@ vector<string> tokenize(string line) {
             token = "";
             continue;
         }
-        if (line[i] == '+' or line[i] == '-' or line[i] == '=' or line[i] == '*' or line[i] == '/') {
+        if (line[i] == '+' or line[i] == '-' or line[i] == '*' or line[i] == '/') {
             if (token.length() > 0) {
                 tokenList.push_back(token);
                 token = "";
@@ -30,6 +30,20 @@ vector<string> tokenize(string line) {
             token = token + line[i];
             tokenList.push_back(token);
             token = "";
+        if (line[i] == '=') {
+            if (token.length() > 0) {
+                tokenList.push_back(token);
+                token = "";
+            }
+            if (line[i+1] == '=') {
+                token = "==";
+            }
+            else {
+                token = "=";
+            }
+            tokenList.push_back(token);
+            token = "";
+        }
             continue;
         }
         token = token + line[i];

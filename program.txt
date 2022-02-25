@@ -1,5 +1,3 @@
 int abc = 1 + 2;
 string name = "Nathan";
-if (name == "Nathan") {
-
-}
+if (name == "Nathan")
