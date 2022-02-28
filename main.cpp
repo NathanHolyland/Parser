@@ -5,63 +5,70 @@
 #include <map>
 using namespace std;
 
-vector<string> tokenize(string line) {
-    vector<string> tokenList;
+vector<string> tokenize(vector<string> file) {
+    vector<string> tokens;
     string token = "";
-    for (int i = 0; i < line.length(); i++) {
-        if (line[i] == ';') {
-            tokenList.push_back(token);
-            token = "";
-            break;
-        }
-        if (line[i] == ' ') {
-            if (token.length() == 0) {
+    for (string line : file) {
+        for (int c = 0; c < line.length(); c ++) {
+            if (line[c] == ' ') {
+                if (token.length() > 0) {
+                    tokens.push_back(token);
+                    token = "";
+                }
                 continue;
             }
-            tokenList.push_back(token);
-            token = "";
-            continue;
-        }
-        if (line[i] == '+' or line[i] == '-' or line[i] == '*' or line[i] == '/') {
-            if (token.length() > 0) {
-                tokenList.push_back(token);
-                token = "";
+            else if (line[c] == '+' or line[c] == '-' or line[c] == '/' or line[c] == '*') {
+                if (token.length() > 0) {
+                    tokens.push_back(token);
+                    token = "";
+                }
+                string tmp_string = "";
+                tmp_string.push_back(line[c]);
+                tokens.push_back(tmp_string);
             }
-            token = token + line[i];
-            tokenList.push_back(token);
-            token = "";
-        if (line[i] == '=') {
-            if (token.length() > 0) {
-                tokenList.push_back(token);
-                token = "";
+            else if (line[c] == '=') {
+                string tmp_string = "=";
+                if (line[c+1] == '=') {
+                    c += 1;
+                    tmp_string.push_back('=');
+                }
+                if (token.length() > 0) {
+                    tokens.push_back(token);
+                    token = "";
+                }
+                tokens.push_back(tmp_string);
             }
-            if (line[i+1] == '=') {
-                token = "==";
+            else if (line[c] == ';') {
+                if (token.length() > 0) {
+                    tokens.push_back(token);
+                    token = "";
+                }
+                tokens.push_back(";");
             }
             else {
-                token = "=";
+                token += line[c];
             }
-            tokenList.push_back(token);
+        }
+        if (token.length() > 0) {
+            tokens.push_back(token);
             token = "";
         }
-            continue;
-        }
-        token = token + line[i];
     }
-    return tokenList;
+    return tokens;
 }
 
 int main(int argc, char *argv[]) {
     ifstream file(argv[1]);
-    vector<vector<string>> tokens;
+    vector<string> tokens;
+    vector<string> text;
     string buffer;
 
     while (getline(file, buffer)) {
-        vector<string> tokenList;
-        tokenList = tokenize(buffer);
-        tokens.push_back(tokenList);
-        for (int i = 0; i < tokenList.size(); i++) {
-            cout << i << " " << tokenList[i] << "\n";
-        }
+        text.push_back(buffer);
+    }
+
+    tokens = tokenize(text);
+    for (int i; i < tokens.size(); i++) {
+        cout << i <<  " " << tokens[i] << "\n";
     }
 }
